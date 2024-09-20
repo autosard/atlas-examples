@@ -8,15 +8,15 @@
  *    https://doi.org/10.1007/3-540-49477-4_26
  *    https://dblp.org/rec/conf/sofsem/GambinM98
  *)
-insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[(0 2) ↦ 1, (1 0) ↦ 1] → [], {[] → []}]
+insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[(2) ↦ 2, (h^1) ↦ 1] → [(2) ↦ 1], {[] → []}]
 insert x h = (meld (node leaf x leaf) h)
 
-delete_min ∷ Ord α ⇒ (α ⨯ Tree α) → (Tree α ⨯ α) | [[(1 0) ↦ 2] → [], {[] → []}]
+delete_min ∷ Ord α ⇒ (α ⨯ Tree α) → (Tree α ⨯ α) | [[(h^1) ↦ 2,(2) ↦ 1] → [(2) ↦ 1], {[] → []}]
 delete_min z h = match h with
   | leaf       → (leaf, z)
   | node l x r → ((meld l r), x)
 
-meld ∷ Ord α ⇒ (Tree α ⨯ Tree α) → Tree α | [[(0 1 0) ↦ 1, (1 0 0) ↦ 1] → [], {[] → []}]
+meld ∷ Ord α ⇒ (Tree α ⨯ Tree α) → Tree α | [[(h2^1) ↦ 1, (h1^1) ↦ 1, (2) |-> 1] → [(2) |-> 1], {[] → []}]
 meld h1 h2 = match h1 with
   | leaf             → h2
   | node h1l h1x h1r → match h2 with

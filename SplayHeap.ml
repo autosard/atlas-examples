@@ -9,35 +9,46 @@
  *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
 
-insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 5/2, (1 0) ↦ 1/2, (1 1) ↦ 1] → [0 ↦ 1/2, (0 2) ↦ 1], {}]
+
+(* insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[h ↦ 1/2, (2) ↦ 5/2, (h^1) ↦ 1/2, (h^1,1) ↦ 1] → [e ↦ 1/2, (2) ↦ 1]] *)
+insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α @ (h^1) |-> 1/2, (h^1,1) |-> 1, (2) |-> 3/2
 insert d x h = match ~ partition d x h with
   | leaf       → (node leaf x leaf)
   | node l _ r → (node l x r)
 
-delete_min ∷ Tree α → Tree α | [[0 ↦ 1/2, (0 2) ↦ 1, (1 0) ↦ 1] → [0 ↦ 1/2, (0 2) ↦ 1], {[(1 1) ↦ 1/2] → [(1 0) ↦ 1/2]}]
+(* delete_min ∷ Tree α → Tree α | [[t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 1] → [e ↦ 1/2, (2) ↦ 1], {[(t^1,1) ↦ 1/2] → [(e^1) ↦ 1/2]}] *)
+delete_min ∷ Tree α → Tree α @ (t^1) |-> 1
 delete_min t = match t with
+  | leaf -> leaf
   | node tab b tc → match tab with
     | leaf         → tc
     | node ta a tb → match ta with
       | leaf → (node tb b tc)
       | ta   → (node (~ delete_min ta) a (node tb b tc))
 
-partition ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 1, (1 0) ↦ 1/2, (1 1) ↦ 1] → [0 ↦ 1/2, (0 2) ↦ 1], {[(1 1) ↦ 1/2] → [(1 0) ↦ 1/2]}]
+
+(* partition ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 1/2, (t^1,1) ↦ 1] → [e ↦ 1/2, (2) ↦ 1], {[(t^1,1) ↦ 1/2] → [(e^1) ↦ 1/2]}] *)
+partition ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α @ (t^1) |-> 1/2, (t^1,1) |-> 1
 partition d p t = match t with
+  | leaf -> leaf
   | node tab ab tbc → if ab <= p
     then match tbc with
       | leaf         → (node (node tab ab leaf) d leaf)
       | node tb b tc → if b <= p
         then match ~ partition d p tc with
+          | leaf -> leaf
           | node tc1 _ tc2 → (node (node (node tab ab tb) b tc1) d tc2) (* zag zag *)
         else match ~ partition d p tb with
+          | leaf -> leaf
           | node tb1 _ tb2 → (node (node tab ab tb1) d (node tb2 b tc)) (* zag zig *)
     else match tab with
       | leaf         → (node leaf d (node leaf ab tbc))
       | node ta a tb → if a <= p
         then match ~ partition d p tb with
+          | leaf -> leaf
           | node tb1 _ tb2 → (node (node ta a tb1) d (node tb2 ab tbc)) (* zig zag *)
         else match ~ partition d p ta with
+          | leaf -> leaf
           | node ta1 _ ta2 → (node ta1 d (node ta2 a (node tb ab tbc))) (* zig zig *)
 
 (*

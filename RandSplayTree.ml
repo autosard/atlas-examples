@@ -1,5 +1,7 @@
-splay ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 3/4, (0 2) ↦ 3/4, (1 0) ↦ 9/8] → [0 ↦ 3/4, (0 2) ↦ 3/4], {[(1 0) ↦ 3/8] → [(1 0) ↦ 3/8]}]
+splay ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[t ↦ 3/4, (2) ↦ 3/4, (t^1) ↦ 9/8] → [e ↦ 3/4, (2) ↦ 3/4], {[(t^1) ↦ 3/8] → [(e^1) ↦ 3/8]}] 
+(* splay ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α @ (t^1) |-> 9/8 *)
 splay a t = match t with
+  | leaf -> leaf
   | node cl c cr → if a == c
     then (node cl c cr)
     else if a < c
@@ -11,12 +13,14 @@ splay a t = match t with
             then match bl with
               | leaf → node leaf b (node br c cr)
               | bl   → match ~ 1/2 splay a bl with
+                | leaf -> leaf
                 | node al _ ar → if coin
                   then ~ 1/2 node al a (node ar b (node br c cr))
                   else       node (node (node al a ar) b br) c cr
             else match br with
               | leaf → (node bl b (node leaf c cr))
               | br   → match ~ 1/2 splay a br with
+                | leaf -> leaf
                 | node al _ ar → if coin
                   then ~ 1/2 node (node bl b al) a (node ar c cr)
                   else       node (node bl b (node al a ar)) c cr
@@ -28,18 +32,22 @@ splay a t = match t with
             then match bl with
               | leaf → (node (node cl c leaf) b br)
               | bl   → match ~ 1/2 splay a bl with
+                | leaf -> leaf
                 | node al _ ar → if coin
                   then ~ 1/2 node (node cl c al) a (node ar b br)
                   else       node cl c (node (node al a ar) b br)
             else match br with
               | leaf → (node (node cl c bl) b leaf)
               | br   → match ~ 1/2 splay a br with
+                | leaf -> leaf
                 | node al _ ar → if coin
                   then ~ 1/2 node (node (node cl c bl) b al) a ar
                   else       node cl c (node bl b (node al a ar))
 
-insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 3/4, (0 2) ↦ 3/4, (1 0) ↦ 3/4, (1 1) ↦ 3/4] → [0 ↦ 3/4, (0 2) ↦ 3/4], {[(1 1) ↦ 3/8] → [(1 0) ↦ 3/8]}]
+insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[t ↦ 3/4, (2) ↦ 3/4, (t^1) ↦ 3/4, (t^1,1) ↦ 3/4] → [e ↦ 3/4, (2) ↦ 3/4], {[(t^1,1) ↦ 3/8] → [(e^1) ↦ 3/8]}] 
+(* insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α @ (t^1) |-> 2, (2) |-> 3/2 *)
 insert a t = match t with
+  | leaf -> leaf
   | node cl c cr → if a == c
     then (node cl c cr)
     else if a < c
@@ -51,12 +59,14 @@ insert a t = match t with
             then match bl with
               | leaf → node (node leaf a leaf) b (node br c cr)
               | bl   → match ~ 1/2 insert a bl with
+                | leaf -> leaf
                 | node al _ ar → if coin
                   then ~ 1/2 node al a (node ar b (node br c cr))
                   else       node (node (node al a ar) b br) c cr
             else match br with
               | leaf → node bl b (node (node leaf a leaf) c cr)
               | br   → match ~ 1/2 insert a br with
+                | leaf -> leaf
                 | node al _ ar → if coin
                   then ~ 1/2 node (node bl b al) a (node ar c cr)
                   else       node (node bl b (node al a ar)) c cr
@@ -68,17 +78,20 @@ insert a t = match t with
             then match bl with
               | leaf → node (node cl c (node leaf a leaf)) b br
               | bl   → match ~ 1/2 insert a bl with
+                | leaf -> leaf
                 | node al _ ar → if coin
                   then ~ 1/2 node (node cl c al) a (node ar b br)
                   else       node cl c (node (node al a ar) b br)
             else match br with
               | leaf → node (node cl c bl) b (node leaf a leaf)
               | br   → match ~ 1/2 insert a br with
+                | leaf -> leaf
                 | node al _ ar → if coin
                   then ~ 1/2 node (node (node cl c bl) b al) a ar
                   else       node cl c (node bl b (node al a ar))
 
-splay_max ∷ (α ⨯ Tree α) → (Tree α ⨯ α) | [[0 ↦ 3/4, (0 2) ↦ 3/4, (1 0) ↦ 9/8] → [0 ↦ 3/4, (0 2) ↦ 3/4], {[(1 0) ↦ 3/8] → [(1 0) ↦ 3/8]}]
+(* splay_max ∷ (α ⨯ Tree α) → (Tree α ⨯ α) | [[t ↦ 3/4, (2) ↦ 3/4, (t^1) ↦ 9/8] → [e ↦ 3/4, (2) ↦ 3/4], {[(t^1) ↦ 3/8] → [(e^1) ↦ 3/8]}] *)
+splay_max ∷ (α ⨯ Tree α) → (Tree α ⨯ α) @ (t^1) |-> 9/8
 splay_max z t = match t with
   | leaf      → (leaf, z)
   | node l b r → match r with
@@ -92,8 +105,10 @@ splay_max z t = match t with
             then ~ 1/2 (node (node (node l b rl) c rrl1) x xa, max)
             else       (node l b (node rl c (node rrl1 x xa)), max) (* No rotation! *)
 
-delete ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[0 ↦ 3/4, (0 2) ↦ 3/4, (1 0) ↦ 9/8] → [0 ↦ 3/4, (0 2) ↦ 3/4], {[(1 0) ↦ 3/8] → [(1 0) ↦ 3/8]}]
+(* delete ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[t ↦ 3/4, (2) ↦ 3/4, (t^1) ↦ 9/8] → [e ↦ 3/4, (2) ↦ 3/4], {[(t^1) ↦ 3/8] → [(e^1) ↦ 3/8]}] *)
+delete ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α @ (t^1) |-> 9/8
 delete z a t = match t with
+  | leaf -> leaf
   | node cl c cr → if a == c
     then match splay_max z cl with
       | (cl1, max) → node cl1 max cr
