@@ -8,87 +8,41 @@
  *   https://doi.org/10.1007/s10817-018-9459-3
  *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
-
-(**
- * Original definition:
- *
- *   link leaf = leaf
- *   link (node lx x leaf) = (node lx x leaf)
- *   link (node lx x (node ly y ry)) = (if x < y then (node (node ly y lx) x ry) else (node (node lx x ly) y ry))
- *)
-link ∷ Ord α ⇒ Tree α → Tree α
-link h = match h with
-  | leaf -> leaf
-  | node lx x rx → match rx with
-    | leaf         → node lx x leaf
-    | node ly y ry → if x < y
-      then node (node ly y lx) x ry
-      else node (node lx x ly) y ry
-
       
-(**
- * Original definition:
- *
- *   merge leaf h = h
- *   merge h leaf = h
- *   merge (node lx x leaf) (node ly y leaf) = link (node lx x (node ly y leaf))
- *)
+
 (*
-merge ∷ Ord α ⇒ (Tree α ⨯ Tree α) → Tree α
-merge h1 h2 = match h1 with
-  | leaf         → h2
-  | node lx x rx → match h2 with
-    | leaf         → node lx x rx
-    | node ly y ry → ~ link (node lx x (node ly y leaf))
-*)
-(**
- * Here, link is inlined. Since `merge` calls `leaf`
- * on `(lx, x, (node ly y leaf))` one can directly
- * inline the node-branch of the second match
- * in the definition of link, i.e.
- *
- *   link (node lx x (node ly y leaf)) = if x < y
- *       then (node (node ly y lx) x leaf)
- *       else (node (node lx x ly) y leaf)
+ The following functions are inlined versions of the provided definitions. 
  *)
 
-(*
-merge_isolated ∷ Ord α ⇒ (Tree α ⨯ Tree α) → Tree α | [[h1 ↦ 1/2, h2 ↦ 1/2, (2) ↦ 3/2, (h1^1,h2^1) ↦ 1/2] → [e ↦ 1/2, (2) ↦ 1]]
-merge_isolated h1 h2 = match h1 with
-  | leaf        → h2
-  | node lx x rx → match h2 with
-    | leaf        → node lx x rx
-    | node ly y ry → if x < y
-      then node (node ly y lx) x leaf
-      else node (node lx x ly) y leaf
+merge ∷ Tree Base → Tree Base | Tree Base [h ↦ 1/2, (h^1) |-> 1/2] → Tree Base [e1 ↦ 1/2]
+merge h = match h with
+  | node h1 _ h2 -> match h1 with
+    | leaf        → h2
+    | node lx x rx → match h2 with
+      | leaf        → node lx x rx
+      | node ly y ry → if x < y
+        then node (node ly y lx) x leaf
+        else node (node lx x ly) y leaf
 
-insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
-insert x h = (merge (node leaf x leaf) h)
-*)
-
-(*
-insert_isolated ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[h ↦ 1/2, (2) ↦ 2, (h^1) ↦ 1/2] → [e ↦ 1/2, (2) ↦ 1]]
-insert_isolated x h = match h with
+insert ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [h ↦ 1/2, (h^1) |-> 1/2, (2) |-> 1/2] → Tree Base [e1 ↦ 1/2]
+(* insert_isolated ∷ (Base ⨯ Tree Base) → Tree Base @> Tree Base []*)
+insert x h = match h with
   | leaf        → node leaf x leaf
   | node ly y _ → if x < y
     then node (node ly y leaf) x leaf
     else node (node leaf x ly) y leaf
-*)
 
-(* Same as `delete_min` but with `merge_pairs_isolated` instead of `pass1` and `pass2`. *)
-(*
-delete_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α |  [[h ↦ 1/2, (2) ↦ 2, (h^1) ↦ 1] → [e ↦ 1/2, (2) ↦ 1]]
-delete_min_via_merge_pairs_isolated h = match h with
-  | node l _ _ → ~ merge_pairs_isolated l
-*)
-(* The same as `merge_pairs` but with `link` inlined. *)
 
-(*
-merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α | [[h ↦ 1/2, (2) ↦ 1, (h^1) ↦ 3/2] → [e ↦ 1/2, (2) ↦ 1], {[(e^1) ↦ 1/2] → [(e^1) ↦ 1/2]}]
-merge_pairs_isolated h = match h with
+delete_min ∷ Tree Base → Tree Base | Tree Base [h ↦ 1/2, (2) ↦ 1/2, (h^1) ↦ 1] → Tree Base [e1 ↦ 1/2]
+delete_min h = match h with
+  | node l _ _ → let x = ~ merge_pairs l in x
+
+
+merge_pairs ∷ Tree Base → Tree Base | Tree Base [h ↦ 1/2, (h^1) ↦ 3/2] → Tree Base [e1 ↦ 1/2]
+merge_pairs h = match h with
   | node la a ra → match ra with
     | leaf         → node la a leaf
-    | node lb b rb → match ~ merge_pairs_isolated rb with
+    | node lb b rb → match ~ merge_pairs rb with
       | leaf → if a < b
         then node (node lb b la) a leaf
         else node (node la a lb) b leaf
@@ -99,72 +53,5 @@ merge_pairs_isolated h = match h with
         else if b < c
           then node (node lc c (node la a lb)) b rc
           else node (node (node la a lb) b lc) c rc
-*)	  
-(*
-delete_min ∷ Ord α ⇒ Tree α → Tree α
-delete_min h = match h with
-  | node l _ _ → ~ merge_pairs l
-*)
 
-merge_pairs ∷ Ord α ⇒ Tree α → Tree α
-merge_pairs h = match h with
-  | leaf -> leaf
-  | node lx x rx → match rx with
-    | leaf         → node lx x leaf
-    | node ly y ry → (~ link (~ link (node lx x (node ly y (~ merge_pairs ry)))))
 
-(*
-pass1 ∷ Ord α ⇒ Tree α → Tree α
-pass1 h = match h with
-  | node lx x rx → match rx with
-    | leaf         → node lx x leaf
-    | node ly y ry → ~ link (node lx x (node ly y (~ pass1 ry)))
-
-pass2 ∷ Ord α ⇒ Tree α → Tree α
-pass2 h = match h with
-  | node l x r → ~ link (node l x (~ pass2 r))
-
-merge_pairs_via_pass ∷ Ord α ⇒ Tree α → Tree α
-merge_pairs_via_pass h = pass2 (pass1 h)
-
-delete_min_via_pass ∷ Ord α ⇒ Tree α → Tree α
-delete_min_via_pass h = match h with
-  | node l _ _ → ~ pass2 (~ pass1 l)
-*)
-  
-(**
- * Original definition:
- *
- *   is_root h = (case h of leaf → true | node l x r → r == leaf)
- *)
-(*
-is_root ∷ Tree α → Bool
-is_root h = match h with
-  | leaf       → true
-  | node _ _ r → match r with
-    | leaf → true
-    | _    → false
-*)
-
-(**
- * Original definition:
- *
- *   pheap leaf = true
- *   pheap (node l x r) = (pheap l /\ pheap r /\ (\forall y \in set_tree l. x <= y))
- *)
-(*
-pheap ∷ Ord α ⇒ Tree α → Bool
-pheap h = match h with
-  | leaf → true
-  | node l x r → (and (and (~ pheap l) (~ pheap r)) (~ all_leq l x))
-
-all_leq ∷ Ord α ⇒ (Tree α ⨯ α) → Bool
-all_leq t x = match t with
-  | leaf → true
-  | node l y r → if y > x
-    then false
-    else (and (~ all_leq l x) (~ all_leq r x))
-
-and ∷ (Bool ⨯ Bool) → Bool
-and x y = (if x then y else false)
-*)

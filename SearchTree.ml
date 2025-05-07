@@ -1,11 +1,11 @@
-insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
+insert ∷ (Base ⨯ Tree Base) → Tree Base 
 insert d t = match t with
   | leaf       → node leaf d leaf
   | node l a r → if a < d
     then node (~ insert d l) a r
     else node l a (~ insert d r)
 
-contains ∷ Ord α ⇒ (α ⨯ Tree α) → Bool
+contains ∷ (Base ⨯ Tree Base) → Bool
 contains d t = match t with
   | leaf       → false
   | node l a r → if a == d
@@ -14,7 +14,7 @@ contains d t = match t with
       then ~ contains d l
       else ~ contains d r
 
-delete ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α
+delete ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base
 delete z d t = match t with
   | node l a r → if a == d
     then match l with
@@ -25,7 +25,7 @@ delete z d t = match t with
       then ~ delete z d l
       else ~ delete z d r
 
-delete_max ∷ (α ⨯ Tree α) → (Tree α ⨯ α)
+delete_max ∷ (Base ⨯ Tree Base) → (Tree Base ⨯ Base)
 delete_max z t = match t with
   | leaf       → (leaf, z)
   | node cl c cr → match cr with

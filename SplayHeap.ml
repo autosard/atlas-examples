@@ -10,14 +10,14 @@
  *)
 
 
-(* insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[h ↦ 1/2, (2) ↦ 5/2, (h^1) ↦ 1/2, (h^1,1) ↦ 1] → [e ↦ 1/2, (2) ↦ 1]] *)
-insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α @ (h^1) |-> 1/2, (h^1,1) |-> 1, (2) |-> 3/2
+insert ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base | Tree Base [h ↦ 1/2, (2) ↦ 5/2, (h^1) ↦ 1/2, (h^1,1) |-> 1] → Tree Base [e1 ↦ 1/2, (2) ↦ 1]
+(* insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α @ Tree Base [(h^1) |-> 3/2, (2) |-> 5/2]*)
 insert d x h = match ~ partition d x h with
   | leaf       → (node leaf x leaf)
   | node l _ r → (node l x r)
 
-(* delete_min ∷ Tree α → Tree α | [[t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 1] → [e ↦ 1/2, (2) ↦ 1], {[(t^1,1) ↦ 1/2] → [(e^1) ↦ 1/2]}] *)
-delete_min ∷ Tree α → Tree α @ (t^1) |-> 1
+delete_min ∷ Tree Base → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 1] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] {Tree Base [(t^1,1) ↦ 1/2] → Tree Base [(e1^1) ↦ 1/2]}
+(* delete_min ∷ Tree Base → Tree Base @ Tree Base [(t^1) |-> 1 ]*)
 delete_min t = match t with
   | leaf -> leaf
   | node tab b tc → match tab with
@@ -27,8 +27,9 @@ delete_min t = match t with
       | ta   → (node (~ delete_min ta) a (node tb b tc))
 
 
-(* partition ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 1/2, (t^1,1) ↦ 1] → [e ↦ 1/2, (2) ↦ 1], {[(t^1,1) ↦ 1/2] → [(e^1) ↦ 1/2]}] *)
-partition ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α @ (t^1) |-> 1/2, (t^1,1) |-> 1
+partition ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 1/2, (t^1,1) ↦ 1] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] { Tree Base [(t^1,1) ↦ 1/2] → Tree Base [(e1^1) ↦ 1/2]}
+(* partition ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 1/2, (t^1,1) |-> 1]*)
+(* partition ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 3/2]*)
 partition d p t = match t with
   | leaf -> leaf
   | node tab ab tbc → if ab <= p

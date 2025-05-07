@@ -7,7 +7,7 @@
  *
  * for weakening.
  *)
-f ∷ Eq α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 1, (1 0) ↦ 1, (0 2) ↦ 1] → [0 ↦ 1, (0 2) ↦ 1], {}]
+f ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t |-> 1, (t^1) |-> 1, (2) |-> 4] -> Tree Base [t |-> 1, (2) |-> 1]
 f x t = match t with
   | leaf       → leaf
   | node l y r → let fl = ~ f x l in let fr = ~ f x r in if x == y

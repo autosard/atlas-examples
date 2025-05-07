@@ -7,7 +7,7 @@
 (**
  * Probabilistic model of SearchTree.insert
  *)
-insert ∷ (α ⨯ Tree α) → Tree α | [[t ↦ 1/2, (2) ↦ 3/2, (t^1) ↦ 3/2] → [e ↦ 1/2, (2) ↦ 1], {[(t^1,1) ↦ 1/2] → [(e^1) ↦ 1/2]}]
+insert ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 3/2, (t^1) ↦ 3/2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] {Tree Base  [(t^1,1) ↦ 1/2] → Tree Base  [(e1^1) ↦ 1/2]}
 insert d t = match t with
   | leaf       → node leaf d leaf
   | node l a r → if coin (* a < d *)
@@ -17,19 +17,22 @@ insert d t = match t with
 (**
  * Probabilistic model of SearchTree.contains
  *)
+
+(*
 contains ∷ Eq α ⇒ (α ⨯ Tree α) → Bool
 contains d t = match t with
   | leaf       → false
   | node l a r → if a == d
     then true
-    else if coin (* a < d *)
+    else if coin 
       then ~ contains d l
       else ~ contains d r
+*)
 
 (**
  * Probabilistic model of SearchTree.delete
  *)
-delete ∷ Eq α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[t ↦ 1/2, (2) ↦ 2, (t^1) ↦ 3/2] → [e ↦ 1/2, (2) ↦ 1]]
+delete ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 2, (t^1) ↦ 3/2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1]
 delete z d t = match t with
   | node l a r → if a == d
     then match l with
@@ -44,7 +47,7 @@ delete z d t = match t with
  * Equal to SearchTree.delete_max, but duplicated
  * here since we want to annotate trees per module.
  *)
-delete_max ∷ (α ⨯ Tree α) → (Tree α ⨯ α) | [[t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 3/2] → [e1 ↦ 1/2, (2) ↦ 1], {[(t^1) ↦ 1/4] → [(e1^1) ↦ 1/4]}]
+delete_max ∷ (Base ⨯ Tree Base) → (Tree Base ⨯ Base) | Tree Base [t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 3/2] → Tree Base  [e1 ↦ 1/2, (2) ↦ 1] {Tree Base [(t^1) ↦ 1/4] → Tree Base [(e1^1) ↦ 1/4]}
 delete_max z t = match t with
   | leaf       → (leaf, z)
   | node cl c cr → match cr with
