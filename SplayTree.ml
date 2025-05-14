@@ -8,7 +8,7 @@
  *   https://doi.org/10.1007/s10817-018-9459-3
  *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
-{-# POTENTIAL (Tree Base: logarithmic, List Base: linlog) #-}
+{-# POTENTIAL (Tree Base: loglr, List Base: linlog) #-}
 
 (* {-# NUMCF 2 #-}*)
 splay ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 3/2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] {Tree Base [(t^1) ↦ 1/2] → Tree Base [(e1^1) ↦ 1/2]} 
