@@ -1,5 +1,4 @@
 {-# POTENTIAL (Tree Base: loglrx_weight_biased) #-}
-{-# RHSTERMS #-}
 
 min :: Tree Base -> Base @> Tree Base []
 min x = match x with

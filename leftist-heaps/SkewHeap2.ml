@@ -13,7 +13,6 @@ insert ∷ (Num ⨯ Tree Num) → Tree Num | Tree Num [(x^1) ↦ 1, x ↦ 1, (2)
 insert a x = (meld (node leaf a leaf) x)
 
 
-{-# STRONGCF #-}
 delete_min ∷ Tree Num → Tree Num | Tree Num [(x^1) |-> 3/2, x ↦ 1] → Tree Num [e1 ↦ 1]
 delete_min x = match x with
   | leaf       → leaf

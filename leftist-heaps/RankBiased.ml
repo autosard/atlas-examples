@@ -1,6 +1,6 @@
 {-# POTENTIAL (Tree Base: rank) #-}
-{-# RHSTERMS #-}
 
+{-# MODE worst_case #-}
 min :: Tree Base -> Base | Tree Base [] -> Tree Base []
 min x = match x with
   | leaf -> error
@@ -16,7 +16,9 @@ delete_min x = match x with
   | node t a u → meld t u
 *)
 
-meld :: (Tree Base * Tree Base) -> Tree Base | Tree Base [x ↦ 1, y ↦ 1, e1 ↦ 1] → Tree Base [e1 ↦ 1]
+
+{-# MODE hybrid #-}
+meld :: (Tree Base * Tree Base) -> Tree Base | Tree Base [x ↦ 1, y ↦ 1, (x^1,y^1) ↦ 1] → Tree Base [e1 ↦ 1] ; Tree Base [x ↦ 1, y ↦ 1] → Tree Base [] 
 meld x y = match x with
   | leaf       → y
   | node t a u → match y with
@@ -25,8 +27,8 @@ meld x y = match x with
       then bal t a (~ meld u (node v b w))
       else bal v b (~ meld w (node t a u))
 
-
-bal :: (Tree Base  * Base * Tree Base) -> Tree Base @> Tree Base [] 
+{-# MODE worst_case #-}
+bal :: (Tree Base  * Base * Tree Base) -> Tree Base | Tree Base [] → Tree Base [] {Tree Base [(t^1,u^1) ↦ 1] → Tree Base [(e1^1) |-> 1]}
 bal t a u = if rank t <= rank u
   then (node u a t)
   else (node t a u)

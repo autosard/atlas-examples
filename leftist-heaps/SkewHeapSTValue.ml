@@ -3,6 +3,7 @@
  *
  *)
 {-# POTENTIAL (Tree Num: right_heavy) #-}
+{-# VALUE_VARS #-}
 
 {-# MODE worst_case #-}
 min :: Tree Num -> Num | Tree Num [] -> Tree Num []
@@ -15,12 +16,12 @@ insert ∷ (Num ⨯ Tree Num) → Tree Num | Tree Num [(x^1) ↦ 1, x ↦ 1, (2)
 insert a x = (meld (node leaf a leaf) x)
 *)
 
-delete_min ∷ Tree Num → Tree Num | Tree Num [x ↦ 1, (x^1) |-> 3] → Tree Num [e1 ↦ 1] 
+delete_min ∷ Tree Num → Tree Num | Tree Num [x ↦ 1, (x^1) |-> 2, (e1^1) |-> 1] → Tree Num [e1 ↦ 1] 
 delete_min x = match x with
   | leaf       → leaf
   | node t a u → meld t u
 
-meld ∷ (Tree Num ⨯ Tree Num) → Tree Num | Tree Num [x ↦ 1, y ↦ 1, (x^1) |-> 1, (y^1) |-> 1, (x^1,y^1,-1) |-> 1] → Tree Num [e1 ↦ 1] {Tree Num [(!g1^(2,1),x^(1,1),y^(1,1),-1) ↦ 1] → Tree Num [(!g1^(2,1),e1^(1,1)) |-> 1]}
+meld ∷ (Tree Num ⨯ Tree Num) → Tree Num | Tree Num [x ↦ 1, y ↦ 1, (x^1) |-> 1, (y^1) |-> 1, (e1^1) |-> 1] → Tree Num [e1 ↦ 1] 
 meld x y = match x with
   | leaf          → y
   | node t a u → match y with
