@@ -18,7 +18,7 @@ delete_min x = match x with
 *)
 
 
-meld :: (Tree Base * Tree Base) -> Tree Base | Tree Base [x ↦ 1, y ↦ 1, e1 ↦ 1] → Tree Base [e1 ↦ 1]
+meld :: (Tree Base * Tree Base) -> Tree Base | Tree Base [x ↦ 1, y ↦ 1, e1 ↦ 1] → Tree Base [e1 ↦ 1] {Tree Base [] -> Tree Base []}
 meld x y = match x with
   | leaf       → y
   | node t a u → match y with

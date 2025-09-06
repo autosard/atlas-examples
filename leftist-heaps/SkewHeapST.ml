@@ -11,7 +11,7 @@ min x = match x with
   | node t a u -> a
 
 (*
-insert ∷ (Num ⨯ Tree Num) → Tree Num | Tree Num [(x^1) ↦ 1, x ↦ 1, (2) |-> 3] → Tree Num [e1 ↦ 1]
+insert ∷ (Num ⨯ Tree Num) → Tree Num | Tree Num [(x^1,2) ↦ 1, x ↦ 1, (2) |-> 4] → Tree Num [e1 ↦ 1]
 insert a x = (meld (node leaf a leaf) x)
 *)
 

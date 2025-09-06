@@ -6,15 +6,17 @@ min x = match x with
   | leaf -> error
   | node t a u -> a
 
-(*
-insert ∷ (Base ⨯ Tree Base) → Tree Base 
-insert a x = (meld (node leaf a leaf) x)
 
-delete_min ∷ Tree Base → Tree Base 
+(*
+insert ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [(2) |-> 0, (x^1, 2) |-> 2, x |-> 1] -> Tree Base [e1 ↦ 1]
+insert a x = (meld (node leaf a leaf) x)
+*)
+
+delete_min ∷ Tree Base → Tree Base | Tree Base [(x^1) |-> 2, x |-> 1] -> Tree Base [e1 ↦ 1]
 delete_min x = match x with
   | leaf       → leaf
   | node t a u → meld t u
-*)
+
 
 
 {-# MODE hybrid #-}
