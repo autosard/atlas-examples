@@ -1,0 +1,25 @@
+{-# TEMPLATE [log(1,2), rank] #-}
+(**
+ * Example for (tick:defer) by Florian Zuleger.
+ *
+ * Requires expert knowledge
+ *
+ *  ∀ t. rk(t) >= 1
+ *
+ * for weakening.
+ *)
+
+import Data.Tree
+
+
+measure Potential (Tree a) where
+  pot Leaf = 0
+  pot (Node l a r) = pot l + log(|l|) + log(|r|) + pot r
+
+
+f : (x : a, t : Tree a) | pot(t) + 2 * log(|t|) -> (y : Tree a) | pot(y)
+f x t = match t with
+  | Leaf       → Leaf
+  | (Node l y r) → let fl = ~ f x l in let fr = ~ f x r in if x == y
+    then fl
+    else fr

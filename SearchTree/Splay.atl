@@ -1,0 +1,78 @@
+{-# TEMPLATE [log(1,2), rank] #-}
+
+import Data.Tree
+import Potential.Splay
+
+splay : (a : a, t : Tree a) | pot(t) + 3/2 * log(|t|) → (y : Tree a) | pot(y) 
+splay a t = match t with 
+   | Leaf -> Leaf 
+   | (Node cl c cr) → if a == c 
+     then Node cl c cr 
+     else if a < c 
+       then
+       match cl with 
+         | Leaf         → Node Leaf c cr 
+         | (Node bl b br) → if a == b 
+           then Node bl a (Node br c cr)
+           else if a < b 
+           then
+	     match bl with 
+               | Leaf → Node Leaf b (Node br c cr) 
+               | bl   → match ~ splay a bl with 
+                 | Leaf -> Leaf 
+                 | (Node al d ar) → Node al a (Node ar b (Node br c cr)) 
+           else
+	     match br with 
+               | Leaf → Node bl b (Node Leaf c cr) 
+               | br   → match ~ splay a br with 
+                 | Leaf -> Leaf 
+		 | (Node al d ar) → Node (Node bl b al) a (Node ar c cr) 
+       else match cr with 
+         | Leaf        → Node cl c Leaf 
+         | (Node bl b br) → if a == b 
+           then Node (Node cl c bl) a br 
+           else if a < b 
+             then match bl with 
+               | Leaf → Node (Node cl c Leaf) b br 
+               | bl   → match ~ splay a bl with 
+                 | Leaf -> Leaf 
+                 | (Node al d ar) → Node (Node cl c al) a (Node ar b br) 
+             else match br with 
+               | Leaf → Node (Node cl c bl) b Leaf 
+               | br   → match ~ splay a br with 
+                 | Leaf -> Leaf 
+                 | (Node al d ar) → Node (Node (Node cl c bl) b al) a ar 
+
+
+insert : (a : a, t : Tree a) | pot(t) + 2 * log(|t|) → (y : Tree a) | pot(y)
+insert a t = match splay a t with
+  | Leaf → Node Leaf a Leaf
+  | (Node l b r) → if a == b
+    then Node l a r
+    else if a < b
+      then Node l a (Node Leaf b r)
+    else Node (Node l b Leaf) a r
+
+(*
+splay_max : (t : Tree a) | pot(t) + 3/2 * log(|t|) → (y : Tree a) | pot(y)
+splay_max t = match t with
+  | Leaf -> Leaf
+  | (Node l b r) → match r with
+    | Leaf         → Node l b Leaf
+    | (Node rl c rr) → match rr with
+      | Leaf → Node (Node l b rl) c Leaf
+      | rr   → match ~ splay_max rr with
+        | Leaf -> Leaf
+        | (Node rrl1 x xa) → Node (Node (Node l b rl) c rrl1) x xa
+
+delete : (a : a, t : Tree a) | pot(t) + 5/2 * log(|t|) → (y : Tree a) | pot(y)
+delete a t = match ~ splay a t with
+  | Leaf -> Leaf
+  | (Node l b r) -> if a == b
+    then match l with
+      | Leaf → r
+      | l    → match ~ splay_max l with
+        | Leaf -> Leaf
+        | (Node ll m d) → Node ll m r
+    else Node l b r
+*)

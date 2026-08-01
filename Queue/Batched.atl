@@ -1,0 +1,45 @@
+{-# TEMPLATE [size, rank] #-}
+(**
+ * A version of a purely functional queue, represented by a front and a rear list.
+ *)
+
+import Data.List
+
+data Queue a = Queue (List a) (List a)
+
+measure Size (Queue a) where
+  size (Queue f r) = size l + size r
+
+measure Potential (Queue a) where
+  pot (Queue f r) = |r|
+
+measure Potential (List a) where
+  pot Nil = 0
+  pot (Cons x xs) = 0
+
+
+moveToFront : (q : Queue a) | pot(q) -> (y : Queue a) | pot(y)
+moveToFront (Queue f r) = match r with
+  | Nil         -> (Queue f Nil)
+  | (Cons x xs) -> moveToFront (Queue (~ Cons x f) xs)
+
+snoc : (q : Queue a, x : a) | 2 + pot(q) -> (y : Queue a) | pot(y)
+snoc (Queue f r) x = match f with
+  | Nil -> ~ (Queue (Cons x Nil) Nil)
+  | f -> ~ (Queue f (Cons x r))
+
+tail : (q : Queue a) | 1 + pot(q) -> (y : Queue a) | pot(y)
+tail (Queue f r) = match f with
+  | Nil -> ~ error "tail of empty queue."
+  | (Cons x xs) -> ~ match xs with
+    | Nil -> moveToFront (Queue Nil r)
+    | xs -> Queue xs r
+
+(*
+{-# MODE worst_case #-}
+head :: (List Base * List Base) -> a | List Base [() |-> 1] -> List Base []
+head f r = match f with
+  | [] -> ~ error
+  | cons x xs -> ~ x
+*)
+

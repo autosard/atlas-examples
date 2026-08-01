@@ -8,6 +8,10 @@
  *    https://doi.org/10.1007/3-540-49477-4_26
  *    https://dblp.org/rec/conf/sofsem/GambinM98
  *)
+
+{-# POTENTIAL (Tree Base: loglr) #-}
+
+
 (*insert ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [(2) ↦ 2, (h^1) ↦ 1] → Tree Base [(2) ↦ 1] {Tree Base [] → Tree Base []}*)
 insert ∷ (Base ⨯ Tree Base) → Tree Base @ Tree Base [(2) ↦ 1, (h^1) ↦ 1]
 insert x h = (meld (node leaf x leaf) h)
@@ -18,9 +22,8 @@ delete_min z h = match h with
   | leaf       → (leaf, z)
   | node l x r → ((meld l r), x)
 
-(*meld ∷ (Tree Base ⨯ Tree Base) → Tree Base | Tree Base [(h2^1) ↦ 1, (h1^1) ↦ 1, (2) |-> 1] → Tree Base [(2) |-> 1] {Tree Base [] → Tree Base []}*)
-meld ∷ (Tree Base ⨯ Tree Base) → Tree Base @ Tree Base [(h2^1) ↦ 1, (h1^1) ↦ 1]
-meld h1 h2 = match h1 with
+meld ∷ (Tree Base ⨯ Tree Base) → Tree Base | Tree Base [(h2^1) ↦ 1, (h1^1) ↦ 1, (2) |-> 1] → Tree Base [(2) |-> 1] {Tree Base [] → Tree Base []}
+(*meld ∷ (Tree Base ⨯ Tree Base) → Tree Base @ Tree Base [(h2^1) ↦ 1, (h1^1) ↦ 1]*)meld h1 h2 = match h1 with
   | leaf             → h2
   | node h1l h1x h1r → match h2 with
     | leaf             → (node h1l h1x h1r)

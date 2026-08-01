@@ -1,0 +1,56 @@
+(**
+ * The function definitions in this file are taken from or made to match
+ * Section 8 of
+ *
+ *   Tobias Nipkow, Hauke Brinkop
+ *   Amortized Complexity Verified
+ *   Journal of Automated Reasoning, Vol. 62, Iss. 3, pp. 367-391
+ *   https://doi.org/10.1007/s10817-018-9459-3
+ *   https://dblp.org/rec/journals/jar/NipkowB19
+ *)
+
+import Data.Tree
+import Potential.Splay
+
+(*
+ The following functions are inlined versions of the provided definitions. 
+ *)
+
+merge : (h: Tree a) | pot(h) + 1/2 * log(|h|) - 1/2 -> (y : Tree a) | pot(y)
+merge h = match h with
+  | (Node h1 _ h2) -> match h1 with
+    | Leaf        → h2
+    | (Node lx x rx) → match h2 with
+      | Leaf        → Node lx x rx
+      | (Node ly y ry) → if x < y
+        then Node (Node ly y lx) x Leaf
+        else Node (Node lx x ly) y Leaf
+
+insert : (x : a, h : Tree a) | pot(h) + 1/2 * log(|h|) -> (y : Tree a) | pot(y)
+insert x h = match h with
+  | Leaf        → Node Leaf x Leaf
+  | (Node ly y r) → if x < y
+    then Node (Node ly y Leaf) x Leaf
+    else Node (Node Leaf x ly) y Leaf
+
+
+delete_min : (h : Tree a) | pot(h) + log(|h|) - 1/2 -> (y : Tree a) | pot(y)
+delete_min h = match h with
+  | (Node l a r) → ~ merge_pairs l
+
+merge_pairs : (h : Tree a) | pot(h) + 3/2 * log(|h|) -> (y : Tree a) | pot(y)
+merge_pairs h = match h with
+  | (Node la a ra) → match ra with
+    | Leaf         → Node la a Leaf
+    | (Node lb b rb) → match ~ merge_pairs rb with
+      | Leaf → if a < b
+        then Node (Node lb b la) a Leaf
+        else Node (Node la a lb) b Leaf
+      | (Node lc c rc) → if a < b
+        then if a < c
+          then Node (Node lc c (Node lb b la)) a rc
+          else Node (Node (Node lb b la) a lc) c rc
+        else if b < c
+          then Node (Node lc c (Node la a lb)) b rc
+          else Node (Node (Node la a lb) b lc) c rc
+

@@ -1,0 +1,32 @@
+{-# TEMPLATE [log(1,2), rank] #-}
+
+import Tree
+
+measure Potential (Tree a) where
+  pot Leaf = 0
+  pot (Node t a u) = pot t + 1/2 * log(|t| + |u|) - 1/2 * log(|t|) + pot u
+
+(*
+min : (x : Tree a) | 0 -> (a : a) | 0
+min Leaf = error "empty tree"
+min (Node t a u) = a
+*)
+
+
+delete_min : (x : Tree a) | 3/2 * log(|x|) + pot x → (y : Tree a) | pot y
+delete_min Leaf = Leaf
+delete_min (Node t a u) = meld t u
+
+insert : (a : a, x : Tree a) | 1/2 * log(|x| + 2) + 1/2 * log(|x|) + pot x + 3 → (y : Tree a) | pot y
+insert a x = (meld (Node Leaf a Leaf) x)
+
+meld : (x : Tree a, y : Tree a) | pot x + pot y + 1/2 * log(|x| + |y| - 1) + 1/2 * log(|x|) + 1/2 * log(|y|) → (z : Tree a) | pot z
+meld Leaf y = y
+meld x Leaf = x
+meld (Node t a u) (Node v b w) = if a <= b
+  then bal t a (~ meld (Node v b w) u)
+  else bal v b (~ meld (Node t a u) w)
+
+bal : (t : Tree a, a : a, u : Tree a) | pot t + pot u + 1/2 * log(|t| + |u|) - 1/2 * log(|u|) -> (y : Tree a) | pot y
+bal t a u = Node u a t
+
