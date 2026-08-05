@@ -1,5 +1,3 @@
-{-# TEMPLATE [log(1,2), rank] #-}
-
 import Data.Tree
 import Potential.Splay
 
@@ -53,7 +51,6 @@ insert a t = match splay a t with
       then Node l a (Node Leaf b r)
     else Node (Node l b Leaf) a r
 
-(*
 splay_max : (t : Tree a) | pot(t) + 3/2 * log(|t|) → (y : Tree a) | pot(y)
 splay_max t = match t with
   | Leaf -> Leaf
@@ -75,4 +72,4 @@ delete a t = match ~ splay a t with
         | Leaf -> Leaf
         | (Node ll m d) → Node ll m r
     else Node l b r
-*)
+

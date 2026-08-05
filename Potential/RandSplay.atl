@@ -1,0 +1,5 @@
+{-# TEMPLATE [log(1,2), rank] #-}
+
+measure Potential (Tree a) where
+  pot Leaf = 0
+  pot (Node l a r) = pot l + 3/4 * log(|l|) + 3/4 * log(|r|) + pot r
