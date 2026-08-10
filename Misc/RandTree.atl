@@ -1,0 +1,11 @@
+{-# TEMPLATE [log(1,2)] #-}
+
+import Data.Tree
+
+{-# ANALYSIS worst_case descend #-}
+descend : (t : Tree a) | log(|t|) -> (y : Tree a) | 0
+descend t = match t with
+  | Leaf       → Leaf
+  | (Node l a r) → if coin
+    then Node (~ descend l) a r
+    else Node l a (~ descend r)

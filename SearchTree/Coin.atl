@@ -1,0 +1,65 @@
+(**
+ * A version of SearchTree, where comparison of elements α
+ * is replaced by a coin flip. 
+ *)
+
+(**
+ * Probabilistic model of SearchTree.insert
+ *)
+
+import Data.Tree
+import Potential.Splay
+
+
+insert : (d : a, t : Tree a) | pot(t) + 3/2 * log(|t|) -> (y : Tree a) | pot(y)
+insert d t = match t with
+  | Leaf       → Node Leaf d Leaf
+  | (Node l a r) → if coin 
+    then Node (~ insert d l) a r
+    else Node l a (~ insert d r)
+
+
+{-# ANALYSIS worst_case contains #-}
+contains : (d : a, t : Tree a) | log(|t|) -> (y : Bool) | 0
+contains d t = match t with
+  | Leaf       → False
+  | (Node l a r) → if a == d
+    then True
+    else if coin 
+      then ~ contains d l
+      else ~ contains d r
+
+
+delete : (z : a, d : a, t : Tree a) | 3/2 * log(|t|) + 1 + pot(t) -> (y : Tree a) | pot(y)
+delete z d t = match t with
+  | (Node l a r) → if a == d
+    then match l with
+      | Leaf → r
+      | l    → match ~ delete_max z l with
+        | (ll, m) → Node ll m r
+    else if coin 
+      then ~ (delete z d l)
+      else ~ (delete z d r)
+
+(**
+ * Equal to SearchTree.delete_max, but duplicated
+ * here since we want to annotate trees per module.
+ *)
+measure Size (Tree a * a) where
+  pot (t, x) = size t
+
+measure Potential (Tree a * a) where
+  pot (t, x) = pot t
+
+delete_max : (z : a, t : Tree a) | 3/2 * log(|t|) + pot(t) -> (y : (Tree a * a)) | pot(y)
+delete_max z t = match t with
+  | Leaf       → (Leaf, z)
+  | (Node cl c cr) → match cr with
+    | Leaf         → (cl, c)
+    | (Node bl b br) → match br with
+      | Leaf → ((Node cl c bl), b)
+      | br   → match ~ delete_max z br with
+        | (t1, m) → match t1 with
+          | Leaf         → (Leaf, z)
+          | (Node al a ar) → (Node (Node (Node cl c bl) b al) a ar, m)
+

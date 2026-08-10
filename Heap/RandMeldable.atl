@@ -1,0 +1,41 @@
+(**
+ * The function definitions in this file are taken from or made to match
+ * Section x of
+ *
+ *    Anna Gambin, Adam Malinowski
+ *    Randomized Meldable Priority Queues
+ *    SOFSEM 1998: Theory and Practice of Informatics, LNCS, Vol. 1521, pp. 344-349
+ *    https://doi.org/10.1007/3-540-49477-4_26
+ *    https://dblp.org/rec/conf/sofsem/GambinM98
+ *)
+{-# TEMPLATE [log(1,2)] #-}
+
+import Data.Tree
+
+measure Size (a * Tree a) where
+  size (x, t) = size t
+
+{-# ANALYSIS worst_case insert #-}
+insert : (x : a, h : Tree a) | log(|h|) + 1 -> (y : Tree a) | 0
+insert x h = meld (Node Leaf x Leaf) h
+
+{-# ANALYSIS worst_case delete_min #-}
+delete_min : (z : a, h : Tree a) | 2 * log(|h|) -> (y : (a * Tree a)) | 0
+delete_min z h = match h with
+  | Leaf       → (z, Leaf)
+  | (Node l x r) → (x, (meld l r))
+  
+
+{-# ANALYSIS worst_case meld #-}
+meld : (h1 : Tree a, h2 : Tree a) | log(|h1|) + log(|h2|) -> (y : Tree a) | 0
+meld h1 h2 = match h1 with
+  | Leaf             → h2
+  | (Node h1l h1x h1r) → match h2 with
+    | Leaf              → (Node h1l h1x h1r)
+    | (Node h2l h2x h2r) → if h1x > h2x
+      then if coin
+        then (Node (~ meld h2l (Node h1l h1x h1r)) h2x h2r)
+        else (Node h2l h2x (~ meld h2r (Node h1l h1x h1r)))
+      else if coin
+        then (Node (~ meld h1l (Node h2l h2x h2r)) h1x h1r)
+        else (Node h1l h1x (~ meld h1r (Node h2l h2x h2r)))

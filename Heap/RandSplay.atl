@@ -1,0 +1,62 @@
+(**
+ * The function definitions in this file are based on
+ * Section 7 of
+ *
+ *   Tobias Nipkow, Hauke Brinkop
+ *   Amortized Complexity Verified
+ *   Journal of Automated Reasoning, Vol. 62, Iss. 3, pp. 367-391
+ *   https://doi.org/10.1007/s10817-018-9459-3
+ *   https://dblp.org/rec/journals/jar/NipkowB19
+ *)
+
+import Data.Tree
+import Potential.RandSplay
+
+
+measure Size (a * Tree a) where
+  size (x, t) = size t
+
+measure Potential (a * Tree a) where
+  pot (x, t) = pot t
+
+
+delete_min : (z : a, t : Tree a) | 3/4 * log(|t|) + pot(t) -> (y : (a * Tree a)) | pot(y)
+delete_min z t = match t with
+  | Leaf          → (z, Leaf)
+  | (Node tab b tc) → match tab with
+    | Leaf         → (b, tc)
+    | (Node ta a tb) → match ta with
+      | Leaf → (a, Node tb b tc)
+      | ta   → match ~ 1/2 delete_min z ta with
+        | (m, t1) → if coin
+          then ~ 1/2 (m, Node t1 a (Node tb b tc))
+          else       (m, Node (Node t1 a tb) b tc)
+
+
+insert : (d : a, t : Tree a) | 3/4 * log(|t|) + 3/4 * log(|t| + 1) + pot(t) -> (y : (Tree a)) | pot(y)
+insert d t = match t with
+  | Leaf -> Leaf
+  | (Node tab ab tbc) → if ab <= d
+    then match tbc with
+      | Leaf         → Node tab ab (Node Leaf d Leaf)
+      | (Node tb b tc) → if b <= d
+        then match ~ 1/2 insert d tc with (* zag zag *)
+          | (Node tc1 c tc2) → if coin
+            then ~ 1/2 Node (Node (Node tab ab tb) b tc1) c tc2
+            else       Node tab ab (Node tb b (Node tc1 c tc2))
+        else match ~ 1/2 insert d tb with (* zag zig *)
+          | (Node tb1 c tb2) → if coin
+            then ~ 1/2 Node (Node tab ab tb1) d (Node tb2 b tc)
+            else       Node tab ab (Node (Node tb1 c tb2) b tc)
+    else match tab with
+      | Leaf         → Node (Node Leaf d Leaf) ab tbc
+      | (Node ta a tb) → if a <= d
+        then match ~ 1/2 insert d tb with (* zig zag *)
+          | (Node tb1 c tb2) → if coin
+            then ~ 1/2 Node (Node ta a tb1) c (Node tb2 ab tbc)
+            else       Node (Node ta a (Node tb1 c tb2)) ab tbc
+        else match ~ 1/2 insert d ta with (* zig zig *)
+          | (Node ta1 c ta2) → if coin
+            then ~ 1/2 Node ta1 c (Node ta2 a (Node tb ab tbc))
+            else       Node (Node (Node ta1 c ta2) a tb) ab tbc
+
