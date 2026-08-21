@@ -62,7 +62,7 @@ splay_max t = match t with
         | Leaf -> Leaf
         | (Node rrl1 x xa) → Node (Node (Node l b rl) c rrl1) x xa
 
-delete : (a : a, t : Tree a) | pot(t) + 5/2 * log(|t|) → (y : Tree a) | pot(y)
+delete : (a : a, t : Tree a) | pot(t) + 5/2 * log(|t|) + 2 → (y : Tree a) | pot(y)
 delete a t = match ~ splay a t with
   | Leaf -> Leaf
   | (Node l b r) -> if a == b

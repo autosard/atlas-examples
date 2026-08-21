@@ -1,0 +1,12 @@
+{-# TEMPLATE [binom(2)] #-}
+
+import Data.List
+import Data.Nat
+
+pmult : (n : Nat, l : List Nat) | binom (|l|) 1 -> (l' : List a) | 0
+pmult n Nil = Nil
+pmult n (Cons x xs) = Cons (mult x n) (~ pmult n xs)
+
+dyade : (l1 : List Nat, l2 : List Nat) | binom (|l1|) 1 * binom (|l2|) 1 + binom (|l1|) 1 -> (l' : List a) | 0
+dyade Nil l2 = Nil
+dyade (Cons x xs) l2 = Cons (pmult x l2) (~ dyade xs l2)

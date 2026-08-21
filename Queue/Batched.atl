@@ -36,10 +36,8 @@ tail (Queue f r) = match f with
     | xs -> Queue xs r
 
 (*
-{-# MODE worst_case #-}
-head :: (List Base * List Base) -> a | List Base [() |-> 1] -> List Base []
+head : (q : Queue a) | 1 + pot(q) -> (y : Queue a) | pot(y)
 head f r = match f with
   | [] -> ~ error
   | cons x xs -> ~ x
 *)
-

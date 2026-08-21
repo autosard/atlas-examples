@@ -1,14 +1,18 @@
 {-# TEMPLATE [log(1,2), rank] #-}
 
+import Data.Nat
 import Data.Tree
 import Potential.SkewThreeHalves
+
+weight : (x : Tree a) | 0 -> (y : Nat) | 0
+weight Leaf = Zero
+weight (Node t a u) = Suc (add (weight t) (weight u))
 
 (*
 min : (x : Tree a) | 0 -> (a : a) | 0
 min Leaf = error "empty tree"
 min (Node t a u) = a
 *)
-
 
 delete_min : (x : Tree a) | 3/2 * log(|x|) + pot x → (y : Tree a) | pot y
 delete_min Leaf = Leaf
@@ -25,5 +29,8 @@ meld (Node t a u) (Node v b w) = if a <= b
   else bal v b (~ meld (Node t a u) w)
 
 bal : (t : Tree a, a : a, u : Tree a) | pot t + pot u + 1/2 * log(|t| + |u|) - 1/2 * log(|u|) -> (y : Tree a) | pot y
-bal t a u = Node u a t
+bal t a u = if weight l <= weight r
+      	    then Node u a t
+	    else Node t a u
+
 

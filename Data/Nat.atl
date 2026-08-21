@@ -1,0 +1,44 @@
+data Nat = Zero | Suc Nat
+
+measure Size Nat where
+  size Zero = 0
+  size (Suc n) = size n + 1
+
+measure Potential Nat where
+  pot Zero = 0
+  pot (Suc n) = 0
+
+add : (n : Nat, m : Nat) | 0 -> (y : Nat) | 0
+add Zero m = m
+add (Suc n) m = Suc (add n m)
+
+sub : (n : Nat, m : Nat) | 0 -> (y : Nat) | 0
+sub Zero m = Zero 
+sub n Zero = n 
+sub (Suc n) (Suc m) = sub n m
+
+mult : (n : Nat, m : Nat) | 0 -> (y : Nat) | 0
+mult Zero m = Zero
+mult n Zero = Zero
+mult (Suc n) m = add m (mult n m) 
+
+(*
+div2 : (n : Nat) | 0 -> (y : Nat) | 0
+div2 n = div2Acc n Zero
+
+div2Acc : (n : Nat, acc : Nat) | 0 -> (y : Nat) | 0
+div2Acc Zero r = r
+div2Acc (Suc n) r = match n with
+  | Zero -> r
+  | (Suc nn) -> div2Acc (sub (Suc (Suc nn)) (Suc (Suc Zero))) (Suc r)
+*)
+
+repSub : (n : Nat, m : Nat, c : Nat, r : Nat) | 0 -> (y : Nat) | 0
+repSub Zero m c r = r  
+repSub (Suc n) d Zero r = repSub n d d Zero 
+repSub (Suc n) d (Suc c) r = repSub n d c (Suc r)
+
+mod : (n : Nat, m : Nat) | 0 -> (y : Nat) | 0
+mod n (Suc m) = repSub n m m Zero
+
+
