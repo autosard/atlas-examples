@@ -1,0 +1,15 @@
+(**
+ * Basic building block of skew heaps, rotates along the rightmost path. 
+ *
+ *)
+{-# TEMPLATE [log(1,2), rank] #-}
+
+import Data.Tree
+
+measure Potential (Tree a) where
+  pot Leaf = 0
+  pot (Node l a r) = pot l + 1/2 * log(|r|) + pot r
+
+swap : (x : Tree a) | log(|x|) + pot(x) -> (y : Tree a) | pot(y)
+swap Leaf = Leaf
+swap (Node l a r) = Node (~ swap r) a l

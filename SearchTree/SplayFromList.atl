@@ -1,0 +1,13 @@
+{-# TEMPLATE [nlog, log(1,2), rank] #-}
+
+import SearchTree.Splay
+import Data.List
+
+measure Potential (List a) where
+  pot Nil = 0
+  pot (Cons x xs) = 0
+
+-- slightly better bound: (|l| - 1) * 2 * log(|l| + 1) = 2 * |l| * log(|l| + 1) - 2 log(|l| + 1)
+fromList : (l : List a, t : Tree a) | 2 * |l| * log(|l|) -> (y : Tree a) | pot(y)
+fromList Nil t = Leaf
+fromList (Cons x xs) t = insert x (fromList xs t)
