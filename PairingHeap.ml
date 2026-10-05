@@ -14,6 +14,7 @@
  The following functions are inlined versions of the provided definitions. 
  *)
 
+{-# STRONG_CF #-}
 merge ∷ Tree Base → Tree Base | Tree Base [h ↦ 1/2, (h^1) |-> 1/2] → Tree Base [e1 ↦ 1/2]
 merge h = match h with
   | node h1 _ h2 -> match h1 with
@@ -24,6 +25,7 @@ merge h = match h with
         then node (node ly y lx) x leaf
         else node (node lx x ly) y leaf
 
+{-# STRONG_CF #-}
 insert ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [h ↦ 1/2, (h^1) |-> 1/2, (2) |-> 1/2] → Tree Base [e1 ↦ 1/2]
 (* insert_isolated ∷ (Base ⨯ Tree Base) → Tree Base @> Tree Base []*)
 insert x h = match h with
@@ -33,11 +35,13 @@ insert x h = match h with
     else node (node leaf x ly) y leaf
 
 
+{-# STRONG_CF #-}
 delete_min ∷ Tree Base → Tree Base | Tree Base [h ↦ 1/2, (2) ↦ 1/2, (h^1) ↦ 1] → Tree Base [e1 ↦ 1/2]
 delete_min h = match h with
   | node l _ _ → let x = ~ merge_pairs l in x
 
 
+{-# STRONG_CF #-}
 merge_pairs ∷ Tree Base → Tree Base | Tree Base [h ↦ 1/2, (h^1) ↦ 3/2] → Tree Base [e1 ↦ 1/2]
 merge_pairs h = match h with
   | node la a ra → match ra with

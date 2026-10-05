@@ -11,6 +11,7 @@
 {-# POTENTIAL (Tree Base: loglr, List Base: linlog) #-}
 
 (* {-# NUMCF 2 #-}*)
+{-# STRONG_CF #-}
 splay ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 3/2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] {Tree Base [(t^1) ↦ 1/2] → Tree Base [(e1^1) ↦ 1/2]} 
 (* splay ∷ (Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 3/2] *)
 splay a t = match t with
@@ -49,6 +50,7 @@ splay a t = match t with
                 | leaf -> leaf
                 | node al _ ar → node (node (node cl c bl) b al) a ar
 
+{-# STRONG_CF #-}
 splay_max ∷ Tree Base → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 3/2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] {Tree Base [(t^1) ↦ 1/2] → Tree Base [(e1^1) ↦ 1/2]} 
 (* splay_max ∷ Tree Base → Tree Base @ Tree Base [(t^1) |-> 3/2]*)
 splay_max t = match t with
@@ -63,6 +65,7 @@ splay_max t = match t with
 
 
 
+{-# STRONG_CF #-}
 delete ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 3, (t^1) ↦ 5/2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1]
 (* delete ∷ (Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 5/2, (2) |-> 3]*)
 delete a t = match ~ splay a t with
@@ -75,6 +78,7 @@ delete a t = match ~ splay a t with
         | node ll m d_ → node ll m r
     else node l b r
 
+{-# STRONG_CF #-}
 insert ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 3/2, (t^1) ↦ 2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] {}
 (* {Tree Base [(t^1,1) ↦ 1] → Tree Base [(e1^1) ↦ 1]} *)
 (* insert ∷ (Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 2, (2) |-> 1]*)

@@ -1,3 +1,4 @@
+{-# STRONG_CF #-}
 splay ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 3/4, (t^1) ↦ 9/8, (2) |-> 3/4] → Tree Base [e1 ↦ 3/4, (2) |-> 3/4] {Tree Base [(t^1) ↦ 3/8] → Tree Base [(e1^1) ↦ 3/8]} 
 (*splay ∷ (Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 9/8]*)
 splay a t = match t with
@@ -44,6 +45,7 @@ splay a t = match t with
                   then ~ 1/2 node (node (node cl c bl) b al) a ar
                   else       node cl c (node bl b (node al a ar))
 
+{-# STRONG_CF #-}
 insert ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 3/4, (2) ↦ 3/4, (t^1) ↦ 3/4, (t^1,1) ↦ 3/4] → Tree Base [e1 ↦ 3/4, (2) ↦ 3/4] {Tree Base [(t^1,1) ↦ 3/8] → Tree Base [(e1^1) ↦ 3/8]} 
 (* insert ∷ (Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 2, (2) |-> 3/2]*)
 insert a t = match t with
@@ -90,6 +92,7 @@ insert a t = match t with
                   then ~ 1/2 node (node (node cl c bl) b al) a ar
                   else       node cl c (node bl b (node al a ar))
 
+{-# STRONG_CF #-}
 splay_max ∷ (Base ⨯ Tree Base) → (Tree Base ⨯ Base) | Tree Base [t ↦ 3/4, (2) ↦ 3/4, (t^1) ↦ 9/8] → Tree Base [e1 ↦ 3/4, (2) ↦ 3/4] {Tree Base [(t^1) ↦ 3/8] → Tree Base [(e1^1) ↦ 3/8]} 
 (* splay_max ∷ (Base ⨯ Tree Base) → (Tree Base ⨯ Base) @ Tree Base [(t^1) |-> 9/8]*)
 splay_max z t = match t with
@@ -106,6 +109,7 @@ splay_max z t = match t with
             else       (node l b (node rl c (node rrl1 x xa)), max) (* No rotation! *)
 
 	    
+{-# STRONG_CF #-}
 delete ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 3/4, (2) ↦ 3/4, (t^1) ↦ 9/8] → Tree Base  [e1 ↦ 3/4, (2) ↦ 3/4] {Tree Base [(t^1) ↦ 3/8] → Tree Base  [(e1^1) ↦ 3/8]}
 (* delete ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 9/8]*)
 delete z a t = match t with

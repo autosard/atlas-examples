@@ -9,6 +9,7 @@
  *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
 
+{-# STRONG_CF #-}
 delete_min ∷ (Base ⨯ Tree Base) → (Tree Base ⨯ Base) | Tree Base [t ↦ 3/4, (2) ↦ 1/2, (t^1) ↦ 3/4] → Tree Base [e1 ↦ 3/4, (2) ↦ 1/2] { Tree Base [(t^1) ↦ 3/8] → Tree Base [(e1^1) ↦ 3/8]}
 delete_min z t = match t with
   | leaf          → (leaf, z)
@@ -21,6 +22,7 @@ delete_min z t = match t with
           then ~ 1/2 (node t1 a (node tb b tc), m)
           else       (node (node t1 a tb) b tc, m)
 
+{-# STRONG_CF #-}
 insert ∷ Ord α ⇒ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 3/4, (2) ↦ 1/2, (t^1) ↦ 3/4, (t^1,1) ↦ 3/4] → Tree Base [e1 ↦ 3/4, (2) ↦ 1/2] {Tree Base [(t^1,1) ↦ 3/8] → Tree Base [(e1^1) ↦ 3/8]}
 insert d t = match t with
   | leaf -> leaf

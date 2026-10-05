@@ -10,12 +10,14 @@
  *)
 
 
+{-# STRONG_CF #-}
 insert ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base | Tree Base [h ↦ 1/2, (2) ↦ 5/2, (h^1) ↦ 1/2, (h^1,1) |-> 1] → Tree Base [e1 ↦ 1/2, (2) ↦ 1]
 (* insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α @ Tree Base [(h^1) |-> 3/2, (2) |-> 5/2]*)
 insert d x h = match ~ partition d x h with
   | leaf       → (node leaf x leaf)
   | node l _ r → (node l x r)
 
+{-# STRONG_CF #-}
 delete_min ∷ Tree Base → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 1] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] {Tree Base [(t^1,1) ↦ 1/2] → Tree Base [(e1^1) ↦ 1/2]}
 (* delete_min ∷ Tree Base → Tree Base @ Tree Base [(t^1) |-> 1 ]*)
 delete_min t = match t with
@@ -27,6 +29,7 @@ delete_min t = match t with
       | ta   → (node (~ delete_min ta) a (node tb b tc))
 
 
+{-# STRONG_CF #-}
 partition ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 1/2, (t^1,1) ↦ 1] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] { Tree Base [(t^1,1) ↦ 1/2] → Tree Base [(e1^1) ↦ 1/2]}
 (* partition ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 1/2, (t^1,1) |-> 1]*)
 (* partition ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 3/2]*)
