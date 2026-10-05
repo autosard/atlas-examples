@@ -49,7 +49,7 @@ insert a t = match splay a t with
     then Node l a r
     else if a < b
       then Node l a (Node Leaf b r)
-    else Node (Node l b Leaf) a r
+      else Node (Node l b Leaf) a r
 
 splay_max : (t : Tree a) | pot(t) + 3/2 * log(|t|) → (y : Tree a) | pot(y)
 splay_max t = match t with

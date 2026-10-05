@@ -2,6 +2,8 @@
 
 import Data.Tree
 
+axiom x >= 1, y >= 1 => log(x + y) >= 1/2 * log(x) + 1/2 * log(y) + 1
+
 {-# ANALYSIS worst_case descend #-}
 descend : (t : Tree a) | log(|t|) -> (y : Tree a) | 0
 descend t = match t with

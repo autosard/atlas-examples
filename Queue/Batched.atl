@@ -1,4 +1,4 @@
-{-# TEMPLATE [size, rank] #-}
+{-# TEMPLATE [size, pot] #-}
 (**
  * A version of a purely functional queue, represented by a front and a rear list.
  *)
@@ -8,15 +8,10 @@ import Data.List
 data Queue a = Queue (List a) (List a)
 
 measure Size (Queue a) where
-  size (Queue f r) = size l + size r
+  size (Queue f r) = size f + size r
 
 measure Potential (Queue a) where
   pot (Queue f r) = |r|
-
-measure Potential (List a) where
-  pot Nil = 0
-  pot (Cons x xs) = 0
-
 
 moveToFront : (q : Queue a) | pot(q) -> (y : Queue a) | pot(y)
 moveToFront (Queue f r) = match r with
@@ -35,9 +30,9 @@ tail (Queue f r) = match f with
     | Nil -> moveToFront (Queue Nil r)
     | xs -> Queue xs r
 
-(*
-head : (q : Queue a) | 1 + pot(q) -> (y : Queue a) | pot(y)
-head f r = match f with
-  | [] -> ~ error
-  | cons x xs -> ~ x
-*)
+{-# ANALYSIS worst_case head #-}
+head : (q : Queue a) | 1 -> (y : a) | 0
+head (Queue f r) = match f with
+  | Nil -> ~ error "head of empty queue."
+  | (Cons x xs) -> ~ x
+

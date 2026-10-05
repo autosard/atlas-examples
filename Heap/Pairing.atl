@@ -38,7 +38,7 @@ delete_min : (h : Tree a) | pot(h) + log(|h|) - 1/2 -> (y : Tree a) | pot(y)
 delete_min h = match h with
   | (Node l a r) → ~ merge_pairs l
 
-merge_pairs : (h : Tree a) | pot(h) + 3/2 * log(|h|) -> (y : Tree a) | pot(y)
+merge_pairs : (h : Tree a) | pot(h) + 3/2 * log(|h|) - 3/2 -> (y : Tree a) | pot(y)
 merge_pairs h = match h with
   | (Node la a ra) → match ra with
     | Leaf         → Node la a Leaf
