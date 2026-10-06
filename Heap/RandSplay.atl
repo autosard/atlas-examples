@@ -35,7 +35,7 @@ delete_min z t = match t with
 
 insert : (d : a, t : Tree a) | 3/4 * log(|t|) + 3/4 * log(|t| + 1) + pot(t) -> (y : (Tree a)) | pot(y)
 insert d t = match t with
-  | Leaf -> Leaf
+  | Leaf -> Node Leaf d Leaf
   | (Node tab ab tbc) → if ab <= d
     then match tbc with
       | Leaf         → Node tab ab (Node Leaf d Leaf)
