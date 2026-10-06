@@ -10,8 +10,6 @@
  *)
 {-# POTENTIAL (Tree Base: loglr, List Base: linlog) #-}
 
-(* {-# NUMCF 2 #-}*)
-{-# STRONG_CF #-}
 splay ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 3/2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] {Tree Base [(t^1) ↦ 1/2] → Tree Base [(e1^1) ↦ 1/2]} 
 (* splay ∷ (Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 3/2] *)
 splay a t = match t with
@@ -50,7 +48,6 @@ splay a t = match t with
                 | leaf -> leaf
                 | node al _ ar → node (node (node cl c bl) b al) a ar
 
-{-# STRONG_CF #-}
 splay_max ∷ Tree Base → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 1, (t^1) ↦ 3/2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] {Tree Base [(t^1) ↦ 1/2] → Tree Base [(e1^1) ↦ 1/2]} 
 (* splay_max ∷ Tree Base → Tree Base @ Tree Base [(t^1) |-> 3/2]*)
 splay_max t = match t with
@@ -64,8 +61,6 @@ splay_max t = match t with
         | node rrl1 x xa → node (node (node l b rl) c rrl1) x xa
 
 
-
-{-# STRONG_CF #-}
 delete ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 3, (t^1) ↦ 5/2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1]
 (* delete ∷ (Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 5/2, (2) |-> 3]*)
 delete a t = match ~ splay a t with
@@ -78,7 +73,6 @@ delete a t = match ~ splay a t with
         | node ll m d_ → node ll m r
     else node l b r
 
-{-# STRONG_CF #-}
 insert ∷ (Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 1/2, (2) ↦ 3/2, (t^1) ↦ 2] → Tree Base [e1 ↦ 1/2, (2) ↦ 1] {}
 (* {Tree Base [(t^1,1) ↦ 1] → Tree Base [(e1^1) ↦ 1]} *)
 (* insert ∷ (Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 2, (2) |-> 1]*)
@@ -89,18 +83,6 @@ insert a t = match splay a t with
     else if a < b
       then node l a (node leaf b r)
     else node (node l b leaf) a r
-
-
-(* fromList :: (List Base * Tree Base) -> Tree Base | List Base [(l^(1,1)) ↦ 2, (l^(1,0),2) |-> 1], Tree Base [t ↦ 1/2, (2) ↦ 1] → Tree Base [e1 ↦ 1/2, (2) |-> 1 ] { List Base [(l^(0,1)) ↦ 2, (2) |-> 1] → Tree Base [(e1^1) ↦ 2, (2) |-> 1]}*)
-fromList :: (List Base * Tree Base) -> Tree Base | List Base [(l^(1,0),2) |-> 1/2, (l^(1,1)) |-> 2], Tree Base [t ↦ 1/2, (2) ↦ 1] → Tree Base [e1 ↦ 1/2, (2) |-> 1 ] { List Base [(l^(0,1)) ↦ 1, (2) |-> 1/4] → Tree Base [(e1^1) ↦ 1, (2) |-> 1/4]} 
-(* fromList :: (List Base * Tree Base) -> Tree Base @ List Base [(l^(1,1)) |-> 2, (l^(1,0),2) |-> 1] *)
-fromList l t = match t with
-  | node x1 _ x2 -> error
-  | leaf -> match l with 
-    | [] -> leaf
-    | cons x xs -> insert x (fromList xs leaf)
-  
-
 
 
 (*

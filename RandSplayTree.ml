@@ -108,8 +108,7 @@ splay_max z t = match t with
             then ~ 1/2 (node (node (node l b rl) c rrl1) x xa, max)
             else       (node l b (node rl c (node rrl1 x xa)), max) (* No rotation! *)
 
-	    
-{-# STRONG_CF #-}
+{-# STRONG_CF #-}	    
 delete ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base | Tree Base [t ↦ 3/4, (2) ↦ 3/4, (t^1) ↦ 9/8] → Tree Base  [e1 ↦ 3/4, (2) ↦ 3/4] {Tree Base [(t^1) ↦ 3/8] → Tree Base  [(e1^1) ↦ 3/8]}
 (* delete ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base @ Tree Base [(t^1) |-> 9/8]*)
 delete z a t = match t with

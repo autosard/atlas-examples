@@ -10,7 +10,6 @@
  *)
 
 
-{-# STRONG_CF #-}
 insert ∷ (Base ⨯ Base ⨯ Tree Base) → Tree Base | Tree Base [h ↦ 1/2, (2) ↦ 5/2, (h^1) ↦ 1/2, (h^1,1) |-> 1] → Tree Base [e1 ↦ 1/2, (2) ↦ 1]
 (* insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α @ Tree Base [(h^1) |-> 3/2, (2) |-> 5/2]*)
 insert d x h = match ~ partition d x h with
