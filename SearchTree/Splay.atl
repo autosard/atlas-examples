@@ -17,13 +17,13 @@ splay a t = match t with
 	     match bl with 
                | Leaf → Node Leaf b (Node br c cr) 
                | bl   → match ~ splay a bl with 
-                 | Leaf -> Leaf 
+                 | Leaf -> error "unreachable" 
                  | (Node al d ar) → Node al a (Node ar b (Node br c cr)) 
            else
 	     match br with 
                | Leaf → Node bl b (Node Leaf c cr) 
                | br   → match ~ splay a br with 
-                 | Leaf -> Leaf 
+                 | Leaf -> error "unreachable"
 		 | (Node al d ar) → Node (Node bl b al) a (Node ar c cr) 
        else match cr with 
          | Leaf        → Node cl c Leaf 
@@ -33,12 +33,12 @@ splay a t = match t with
              then match bl with 
                | Leaf → Node (Node cl c Leaf) b br 
                | bl   → match ~ splay a bl with 
-                 | Leaf -> Leaf 
+                 | Leaf -> error "unreachable"
                  | (Node al d ar) → Node (Node cl c al) a (Node ar b br) 
              else match br with 
                | Leaf → Node (Node cl c bl) b Leaf 
                | br   → match ~ splay a br with 
-                 | Leaf -> Leaf 
+                 | Leaf -> error "unreachable"
                  | (Node al d ar) → Node (Node (Node cl c bl) b al) a ar 
 
 
@@ -59,7 +59,7 @@ splay_max t = match t with
     | (Node rl c rr) → match rr with
       | Leaf → Node (Node l b rl) c Leaf
       | rr   → match ~ splay_max rr with
-        | Leaf -> Leaf
+        | Leaf -> error "unreachable"
         | (Node rrl1 x xa) → Node (Node (Node l b rl) c rrl1) x xa
 
 delete : (a : a, t : Tree a) | pot(t) + 5/2 * log(|t|) + 2 → (y : Tree a) | pot(y)
@@ -69,7 +69,7 @@ delete a t = match ~ splay a t with
     then match l with
       | Leaf → r
       | l    → match ~ splay_max l with
-        | Leaf -> Leaf
+        | Leaf -> error "unreachable"
         | (Node ll m d) → Node ll m r
     else Node l b r
 

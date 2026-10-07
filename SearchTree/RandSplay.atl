@@ -15,14 +15,14 @@ splay a t = match t with
             then match bl with
               | Leaf → Node Leaf b (Node br c cr)
               | bl   → match ~ 1/2 splay a bl with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node al a (Node ar b (Node br c cr))
                   else       Node (Node (Node al a ar) b br) c cr
             else match br with
               | Leaf → (Node bl b (Node Leaf c cr))
               | br   → match ~ 1/2 splay a br with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node (Node bl b al) a (Node ar c cr)
                   else       Node (Node bl b (Node al a ar)) c cr
@@ -34,14 +34,14 @@ splay a t = match t with
             then match bl with
               | Leaf → (Node (Node cl c Leaf) b br)
               | bl   → match ~ 1/2 splay a bl with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node (Node cl c al) a (Node ar b br)
                   else       Node cl c (Node (Node al a ar) b br)
             else match br with
               | Leaf → (Node (Node cl c bl) b Leaf)
               | br   → match ~ 1/2 splay a br with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node (Node (Node cl c bl) b al) a ar
                   else       Node cl c (Node bl b (Node al a ar))
@@ -63,14 +63,14 @@ insert a t = match t with
             then match bl with
               | Leaf → Node (Node Leaf a Leaf) b (Node br c cr)
               | bl   → match ~ 1/2 insert a bl with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node al a (Node ar b (Node br c cr))
                   else       Node (Node (Node al a ar) b br) c cr
             else match br with
               | Leaf → Node bl b (Node (Node Leaf a Leaf) c cr)
               | br   → match ~ 1/2 insert a br with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node (Node bl b al) a (Node ar c cr)
                   else       Node (Node bl b (Node al a ar)) c cr
@@ -82,14 +82,14 @@ insert a t = match t with
             then match bl with
               | Leaf → Node (Node cl c (Node Leaf a Leaf)) b br
               | bl   → match ~ 1/2 insert a bl with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node (Node cl c al) a (Node ar b br)
                   else       Node cl c (Node (Node al a ar) b br)
             else match br with
               | Leaf → Node (Node cl c bl) b (Node Leaf a Leaf)
               | br   → match ~ 1/2 insert a br with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node (Node (Node cl c bl) b al) a ar
                   else       Node cl c (Node bl b (Node al a ar))
@@ -109,7 +109,7 @@ splay_max z t = match t with
       | Leaf → (Node (Node l b rl) c Leaf, c)
       | rr   → match ~ 1/2 splay_max z rr with
         | (r1, m) → match r1 with
-          | Leaf          → (Leaf, z)
+          | Leaf          → error "not reachable"
           | (Node rrl1 x xa) → if coin
             then ~ 1/2 (Node (Node (Node l b rl) c rrl1) x xa, m)
             else       (Node l b (Node rl c (Node rrl1 x xa)), m)
@@ -130,14 +130,14 @@ delete z a t = match t with
             then match bl with
               | Leaf → Node Leaf b (Node br c cr)
               | bl   → match ~ 1/2 delete z a bl with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node al a (Node ar b (Node br c cr))
                   else       Node (Node (Node al a ar) b br) c cr
             else match br with
               | Leaf → Node bl b (Node Leaf c cr)
               | br   → match ~ 1/2 delete z a br with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node (Node bl b al) a (Node ar c cr)
                   else       Node (Node bl b (Node al a ar)) c cr
@@ -150,14 +150,14 @@ delete z a t = match t with
             then match bl with
               | Leaf → Node (Node cl c Leaf) b br
               | bl   → match ~ 1/2 delete z a bl with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node (Node cl c al) a (Node ar b br)
                   else       Node cl c (Node (Node al a ar) b br)
             else match br with
               | Leaf → Node (Node cl c bl) b Leaf
               | br   → match ~ 1/2 delete z a br with
-                | Leaf -> Leaf
+                | Leaf -> error "not reachable"
                 | (Node al _ ar) → if coin
                   then ~ 1/2 Node (Node (Node cl c bl) b al) a ar
                   else       Node cl c (Node bl b (Node al a ar))

@@ -46,7 +46,7 @@ insert d t = match t with
             else       Node tab ab (Node tb b (Node tc1 c tc2))
         else match ~ 1/2 insert d tb with (* zag zig *)
           | (Node tb1 c tb2) → if coin
-            then ~ 1/2 Node (Node tab ab tb1) d (Node tb2 b tc)
+            then ~ 1/2 Node (Node tab ab tb1) c (Node tb2 b tc)
             else       Node tab ab (Node (Node tb1 c tb2) b tc)
     else match tab with
       | Leaf         → Node (Node Leaf d Leaf) ab tbc
